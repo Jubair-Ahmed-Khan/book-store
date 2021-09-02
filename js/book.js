@@ -31,6 +31,7 @@ const displayBooks = books => {
 
     // show how many result found 
     if (numFound !== 0) {
+        showNumberDiv.classList.add('text-danger');
         showNumberDiv.innerHTML = `
             <span class="text-success text-center my-5">${numFound}</span> results found
         `;
