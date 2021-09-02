@@ -1,27 +1,35 @@
+// load api from search function
+
 const searchBooks = () => {
     const SearchByBookName = document.getElementById('search-book');
-    searchText = SearchByBookName.value;
-    SearchByBookName.value = "";
-    const url = `https://openlibrary.org/search.json?q=${searchText}
-    `;
-    fetch(url)
-        .then(res => res.json())
-        .then(data => displayBooks(data));
+    const searchText = SearchByBookName.value; //get the input text
+    SearchByBookName.value = "";  //clear text
 
+    // check whether no input is given 
+    if (searchText === "") {
+        alert('Please enter a topic to search !!!');
+    }
+    else {
+        const url = `https://openlibrary.org/search.json?q=${searchText}
+    `;
+        // fetch api 
+        fetch(url)
+            .then(res => res.json())
+            .then(data => displayBooks(data));
+    }
 }
+
+// display search result function 
 
 const displayBooks = books => {
 
     const doc = books.docs;
     const { numFound } = books;
 
-    // main container
-    // const container = document.getElementById('container');
-    //container.textContent = '';
-    const showNumberDiv = document.getElementById('show-number');
+    const showNumberDiv = document.getElementById('show-number'); //where number of result is showed
     showNumberDiv.innerHTML = '';
 
-
+    // show how many result found 
     if (numFound !== 0) {
         showNumberDiv.innerHTML = `
             <span class="text-success text-center my-5">${numFound}</span> results found
@@ -34,29 +42,35 @@ const displayBooks = books => {
         `;
     }
 
+    const showResultDiv = document.getElementById('show-info'); //where books info is showed
+    showResultDiv.innerHTML = '';
 
     doc.forEach(book => {
+
         const { title, first_publish_year, author_name, cover_i } = book;
-        //console.log(title);
-        const showResultDiv = document.getElementById('show-info');
-        //showResultDiv.textContent = '';
+
         // column create 
         const div = document.createElement('div');
         div.classList.add('col');
+
         // card create 
         const cardDiv = document.createElement('div');
         cardDiv.classList.add('card');
         cardDiv.classList.add('h-100');
+
         // card body create 
         const cardBodyDiv = document.createElement('div');
         cardBodyDiv.classList.add('card-body');
 
+        // check if cover image is present or not 
         if (cover_i !== undefined) {
             const img = document.createElement('img');
             const imgSrc = `https://covers.openlibrary.org/b/id/${cover_i}-M.jpg`;
             img.setAttribute('src', imgSrc);
             cardDiv.appendChild(img);
         }
+
+        // check if title is present or not 
         if (title !== undefined) {
             const h5 = document.createElement('h5');
             h5.innerHTML = `
@@ -64,6 +78,8 @@ const displayBooks = books => {
                 `;
             cardBodyDiv.appendChild(h5);
         }
+
+        // check if author name is present or not 
         if (author_name !== undefined) {
             const h5 = document.createElement('h5');
             h5.innerHTML = `
@@ -71,6 +87,8 @@ const displayBooks = books => {
                 `;
             cardBodyDiv.appendChild(h5);
         }
+
+        // check if first publish year is present or not 
         if (first_publish_year !== undefined) {
             const h5 = document.createElement('h5');
             h5.innerHTML = `
@@ -78,12 +96,10 @@ const displayBooks = books => {
                 `;
             cardBodyDiv.appendChild(h5);
         }
+
+        // append items to place where book info will be showed
         cardDiv.appendChild(cardBodyDiv);
         div.appendChild(cardDiv);
         showResultDiv.appendChild(div);
-
     })
-    //document.getElementById('container').appendChild(showResultDiv);
-
-
 }
